@@ -1,0 +1,37 @@
+{
+  "name": "@rawewhat/stora",
+  "description": "StoRa is a redux replacement based on react hooks",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src -o index.js",
+    "watch": "babel src -wo index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "github:rawewhat/stora",
+  "keywords": [
+    "stora",
+    "react",
+    "redux",
+    "state",
+    "hooks"
+  ],
+  "author": "Cheng Sokdara <chengsokdara@gmail.com> (http://rawewhat.web.app)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rawewhat/stora/issues",
+    "email": "chengsokdara@gmail.com"
+  },
+  "homepage": "https://github.com/rawewhat/stora#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
+    "prettier": "^1.19.1"
+  },
+  "peerDependencies": {
+    "react": "16.x.x",
+    "react-dom": "16.x.x"
+  }
+}
