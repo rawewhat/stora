@@ -1,7 +1,7 @@
 {
   "name": "@rawewhat/stora",
   "description": "StoRa is a redux replacement based on react hooks",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
     "build": "babel src -o index.js",
