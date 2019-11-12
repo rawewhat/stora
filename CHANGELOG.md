@@ -1,3 +1,7 @@
+### 0.1.0 (November 12, 2019)
+* **Removed**: error log when cannot find stora.config.js
+* **Fixed**: in mutate config, you can mix up function and object inside it. useStora will check its type and add it to either states or actions accordingly.
+
 ## 0.0.1 (November 11, 2019)
 ### useStora hook
 * can add more states using config mutate object

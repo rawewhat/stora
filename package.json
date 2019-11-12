@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "babel src -o index.js",
-    "watch": "babel src -wo index.js",
+    "watch": "babel src -w -o index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "github:rawewhat/stora",

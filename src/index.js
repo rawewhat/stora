@@ -45,21 +45,17 @@ function query() {
     }
     return [result, this.actions]
   }
+  return [this.states, this.actions]
 }
 
 function mutate() {
-  const value = Object.values(arguments[0])[0]
-  if (typeof value === 'object') {
-    this.states = {
-      ...this.states,
-      ...arguments[0]
-    }
-  } else if (typeof value === 'function') {
-    this.actions = {
-      ...this.actions,
-      ...arguments[0]
-    }
-  } else console.log('Unsupported mutate operation!')
+  Object.entries(arguments[0]).forEach(([key, value]) => {
+    if (typeof value === 'object') {
+      this.states[key] = value
+    } else if (typeof value === 'function') {
+      this.actions[key] = value
+    } else console.log('Unsupported mutate operation!')
+  })
 }
 
 function set() {
@@ -127,16 +123,14 @@ function getConfig(config) {
   try {
     return require('../../../stora.config').default
   } catch (e) {
-    console.log('error', e)
-  }
-  try {
-    return require('../../../src/stora.config').default
-  } catch (e) {
-    console.log('error', e)
-    return {
-      states: {},
-      actions: {},
-      init: () => {}
+    try {
+      return require('../../../src/stora.config').default
+    } catch (e) {
+      return {
+        states: {},
+        actions: {},
+        init: () => {}
+      }
     }
   }
 }
