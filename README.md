@@ -10,18 +10,19 @@ is a global **state management** library with **no dependency** and written pure
   - [With top-level component](#2-initialize-states-and-actions-in-top-level-component)
 - [Usage](#usage)
   - [Change state inside action function](#1-change-state-inside-action-function)
-    - [Set a states with key value pair](#11-change-a-screen-state-using-key-value-pair)
-    - [Set multiple states with object](#12-change-multiple-screen-states-using-object)
-    - [Set multiple states with arrays](#13-change-multiple-screen-states-using-arrays)
-    - [Get a state with string](#14-get-a-screen-states-using-screen-name)
-    - [Get multiple states with arrays](#15-get-multiple-screen-states-using-arrays-of-screen-name-key)
-  - [Access states and actions](#2-access-states-and-actions)
-    - [Get one or multiple states](#21-get-one-or-multiple-screen-states)
-    - [Get one or multiple actions](#22-get-one-or-multiple-screen-actions)
+    - [Set a states with key value pair](#11-change-a-component-state-using-key-value-pair)
+    - [Set multiple states with object](#12-change-multiple-component-states-using-object)
+    - [Set multiple states with arrays](#13-change-multiple-component-states-using-arrays)
+    - [Get a state with string](#14-get-a-component-states-using-state-name)
+    - [Get multiple states with arrays](#15-get-multiple-component-states-using-arrays-of-state-name)
+  - [Accessing states and actions](#2-accessing-states-and-actions)
+    - [Get one or multiple states](#21-get-one-or-multiple-component-states)
+    - [Get one or multiple actions](#22-get-one-or-multiple-component-actions)
     - [Get only actions and skip states](#23-get-only-actions-and-skip-states)
     - [Get states and actions with dot](#24-get-states-and-actions-with-dot)
   - [Add more states or actions](#3-adding-additional-states-or-actions)
   - [Select one or multiple states](#4-selecting-one-or-multiple-states)
+- [Demo](#demo)
 - [Example](#example)
 - [Acknowledgment](#acknowledgement)
 - [License](#license)
@@ -75,7 +76,7 @@ export default {
 }
 ```
 
-_Note: states and actions object uses screen based naming convention_
+_Note: states and actions object uses component based naming convention_
 
 ### 2. Initialize states and actions in top-level component
 
@@ -124,7 +125,7 @@ const App = props => {
 export default App
 ```
 
-_Note: states and actions object uses screen based naming convention_
+_Note: states and actions object uses component based naming convention_
 
 ## Usage
 
@@ -132,36 +133,37 @@ _Note: states and actions object uses screen based naming convention_
 
 in your action function you have access to the global store where you can change and access state.
 
-#### 1.1 Change a screen state using key value pair
+#### 1.1 Change a component state using key value pair
 
-change only one screen states using key and value argument
+change only one component states using key and value argument
 
 ```javascript
 const EXAMPLE_ACTIONS = {
-  exampleScreen: {
+  exampleComponent: {
     exampleAction: ({ set }) => {
-      set('testScreen', {
+      set('testComponent', {
         testState: 'changed'
       })
     }
   }
 }
 ```
-*Any other states in testScreen will be added automatically*
 
-#### 1.2 Change multiple screen states using object
+_Any other states in testComponent will be added automatically_
 
-change multiple screen states using new screen states object and automatically adding other screen states
+#### 1.2 Change multiple component states using object
+
+change multiple component states using new states object, stora will automatically keep previous states
 
 ```javascript
 const EXAMPLE_ACTIONS = {
-  exampleScreen: {
+  exampleComponent: {
     exampleAction: ({ set }) => {
       set({
-        testScreen: {
+        testComponent: {
           testState: 'changed'
         },
-        demoScreen: {
+        demoComponent: {
           demoState: 'changed'
         }
       })
@@ -169,24 +171,25 @@ const EXAMPLE_ACTIONS = {
   }
 }
 ```
-*Any other screen states will be added automatically*
 
-#### 1.3 Change multiple screen states using arrays
+_Any other component states will be added automatically_
 
-change multiple screen states using arrays of new screen states object and automatically adding other screen states
+#### 1.3 Change multiple component states using arrays
+
+change multiple component states using arrays of new states object, stora will automatically keep previous
 
 ```javascript
 const EXAMPLE_ACTIONS = {
-  exampleScreen: {
+  exampleComponent: {
     exampleAction: ({ set }) => {
       set([
         {
-          testScreen: {
+          testComponent: {
             testState: 'changed'
           }
         },
         {
-          demoScreen: {
+          demoComponent: {
             demoState: null
           }
         }
@@ -195,65 +198,66 @@ const EXAMPLE_ACTIONS = {
   }
 }
 ```
-*Any other screen states will be added automatically*
 
-#### 1.4 Get a screen states using screen name
+_Any other component states will be added automatically_
 
-get only one screen states using string of screen name
+#### 1.4 Get a component states using state name
+
+get only one component states using string of state name
 
 ```javascript
 const EXAMPLE_ACTIONS = {
-  exampleScreen: {
+  exampleComponent: {
     exampleAction: ({ get }) => {
-      const testScreen = get('testScreen')
+      const testComponent = get('testComponent')
     }
   }
 }
 ```
 
-#### 1.5 Get multiple screen states using arrays of screen name key
+#### 1.5 Get multiple component states using arrays of state name
 
-get multiple screen states using arrays of screen name string
+get multiple component states using arrays of state name string
 
 ```javascript
 const EXAMPLE_ACTIONS = {
-  exampleScreen: {
+  exampleComponent: {
     exampleAction: ({ get }) => {
       const {
-        testScreen: { testState },
-        demoScreen: { demoState }
-      } = get(['testScreen', 'demoScreen'])
+        testComponent: { testState },
+        demoComponent: { demoState }
+      } = get(['testComponent', 'demoComponent'])
     }
   }
 }
 ```
 
-### 2. Access states and actions
+### 2. Accessing states and actions
 
-#### 2.1 Get one or multiple screen states
+#### 2.1 Get one or multiple component states
 
-you can access states of specific screen or even multiple screen states using destructuring syntax.
+you can access states of specific component or even multiple component states using destructuring syntax.
 
 ```javascript
 const [
   {
-    testScreen: { testState },
-    demoScreen: { demoState }
+    testComponent: { testState },
+    demoComponent: { demoState }
   },
   actions
 ] = useStora()
 ```
 
-#### 2.2 Get one or multiple screen actions
+#### 2.2 Get one or multiple component actions
 
-you may access actions of specific screen or even multiple screen actions using destructuring syntax.
+you can access actions of specific component or even multiple component actions using destructuring syntax.
 
 ```javascript
 const [
   states,
   {
-    testScreen: { testAction },
-    demoScreen: { demoAction }
+    testComponent: { testAction },
+    demoComponent: { demoAction }
   }
 ] = useStora()
 ```
@@ -273,48 +277,74 @@ you may also use dot access on states and actions too
 ```javascript
 const [states, actions] = useStora()
 
-console.log('testState:', states.testScreen.testState)
-actions.demoScreen.demoAction()
+console.log('testState:', states.testComponent.testState)
+actions.demoComponent.demoAction()
 ```
 
 ### 3. Adding additional states or actions
 
-sometimes you want add more states when using useStora hook on a screen
+sometimes you want add more states when using useStora hook on a component
 
 - **mutate** for adding additional states and actions.
 
-Example: adding another screen states
+Example: adding another component states
 
 ```javascript
 const [
   {
-    newScreen: { newState },
-    testScreen: { testState },
-    demoScreen: { demoState }
+    newComponent: { newState }, // here you have access to the new added state
+    testComponent: { testState },
+    demoComponent: { demoState }
   },
   actions
 ] = useStora({
   mutate: {
-    newScreen: {
+    newComponent: {
       newState: 'newState'
     }
   }
 })
 ```
 
-Example: adding another screen actions
+Example: adding another component actions
 
 ```javascript
 const [
   ,
   {
-    newScreen: { newActions },
-    testScreen: { testAction },
-    demoScreen: { demoAction }
+    newComponent: { newActions }, // here you have access to the new added action
+    testComponent: { testAction },
+    demoComponent: { demoAction }
   }
 ] = useStora({
   mutate: {
-    newScreen: {
+    newComponent: {
+      newAction: stora => {
+        console.log('stora', stora)
+      }
+    }
+  }
+})
+```
+
+Example: you can even mix states and actions inside mutate object
+
+```javascript
+const [
+  {
+    newComponent: { newState }, // here you have access to the new added state
+    testComponent: { testState },
+    demoComponent: { demoState }
+  },
+  {
+    newComponent: { newActions }, // here you have access to the new added action
+    testComponent: { testAction },
+    demoComponent: { demoAction }
+  }
+] = useStora({
+  mutate: {
+    newComponent: {
+      newState: 'newState',
       newAction: stora => {
         console.log('stora', stora)
       }
@@ -327,34 +357,43 @@ _by checking mutation object type, useStora is smart enough to know whether you 
 
 ### 4. Selecting one or multiple states
 
-if you want to return only some screen states from useStora hook
+if you want to return only some component states from useStora hook
 
-- **query** for selecting specific screen states
+- **query** for selecting specific component states
 
-Example: select only one screen states
+Example: select only one component states
 
 ```javascript
-const [states, actions] = useStora({
-  query: 'testScreen'
+const [states, ] = useStora({
+  query: 'testComponent'
 })
-// states for this component contains only testScreen states
+// states for this component contains only testComponent states
 const {
-  testScreen: { testState }
+  testComponent: { testState }
 } = states
 ```
 
-Example: select multiple screen states
+Example: select multiple component states
 
 ```javascript
-const [states, actions] = useStora({
-  query: ['testScreen', 'demoScreen']
+const [states, ] = useStora({
+  query: ['testComponent', 'demoComponent']
 })
-// states for this component contains only testScreen and demoScreen states
+// states for this component contains only testComponent and demoComponent states
 const {
-  testScreen: { testState },
-  demoScreen: { demoState }
+  testComponent: { testState },
+  demoComponent: { demoState }
 } = states
 ```
+
+## Demo
+
+I wrote a simple router using StoRa + [RoutRa](https://github.com/rawewhat/routra) in this demo project.
+
+- `git clone git@github.com:rawewhat/routra.git` to clone the project
+- `cd demo` change to demo directory
+- `yarn install` to install dependencies
+- `yarn dev` it will be read on http://localhost:1234
 
 ## Example
 
@@ -416,7 +455,7 @@ _This library is written and improved based on an article on [medium](https://me
 MIT License
 -----------
 
-Copyright (c) 2019 Cheng Sokdara (https://rawewhat.com)
+Copyright (c) 2019 Cheng Sokdara (https://rawewhat-team.com)
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
 files (the "Software"), to deal in the Software without

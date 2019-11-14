@@ -1,3 +1,9 @@
+### 0.1.1 (November 14, 2019)
+* **Added** tightly integrated with [RoutRa](https://github.com/rawewhat/routra), a very simple router for React following StoRa footprint.
+* **Added** with integration with [RoutRa](https://github.com/rawewhat/routra), you can use actions.quera.visit to change route right inside StoRa
+* **Added** include a demo project to better understand how to use StoRa. just clone > yarn install > yarn dev
+* **Fixed** in mutation config, it will detect whether to add state or action properly now
+
 ### 0.1.0 (November 12, 2019)
 * **Removed**: error log when cannot find stora.config.js
 * **Fixed**: in mutate config, you can mix up function and object inside it. useStora will check its type and add it to either states or actions accordingly.

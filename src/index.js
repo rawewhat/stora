@@ -8,6 +8,23 @@ import { useEffect, useState } from 'react'
 
 let stora = null
 
+function getConfig(config) {
+  if (config) return config
+  try {
+    return require('../../../stora.config').default
+  } catch (e) {
+    try {
+      return require('../../../src/stora.config').default
+    } catch (e) {
+      return {
+        states: {},
+        actions: {},
+        init: () => {}
+      }
+    }
+  }
+}
+
 function initStore() {
   const newSetter = useState()[1]
   useEffect(() => {
@@ -16,6 +33,7 @@ function initStore() {
       this.setters = this.setters.filter(setter => setter !== newSetter)
     }
   }, [])
+  if (arguments[0] === 'store') return this
   return [this.states, this.actions]
 }
 
@@ -30,6 +48,10 @@ function initActions(store, actions) {
     }
   })
   return registeredActions
+}
+
+function visit() {
+  this.set('routra', { route: arguments[0] })
 }
 
 function query() {
@@ -51,9 +73,24 @@ function query() {
 function mutate() {
   Object.entries(arguments[0]).forEach(([key, value]) => {
     if (typeof value === 'object') {
-      this.states[key] = value
+      Object.entries(value).forEach(([key1, value1]) => {
+        if (typeof value1 === 'function') {
+          if (this.actions[key] && this.actions[key][key1]) return
+          this.actions[key] = {
+            ...this.actions[key],
+            [key1]: value1.bind(null, this)
+          }
+        } else {
+          if (this.states[key] && this.states[key][key1]) return
+          this.states[key] = {
+            ...this.states[key],
+            [key1]: value1
+          }
+        }
+      })
     } else if (typeof value === 'function') {
-      this.actions[key] = value
+      if (this.actions[key]) return
+      this.actions[key] = value.bind(null, this)
     } else console.log('Unsupported mutate operation!')
   })
 }
@@ -108,31 +145,25 @@ function get() {
 }
 
 const useStora = (initialStates, initialActions, initializer) => {
-  const store = { states: initialStates, setters: [] }
+  const store = {
+    states: { ...initialStates, routra: { route: null } },
+    setters: []
+  }
   store.get = get.bind(store)
   store.set = set.bind(store)
   if (initialActions) store.actions = initActions(store, initialActions)
-  store.actions.mutate = mutate.bind(store)
-  store.actions.query = query.bind(store)
-  if (initializer) initializer(store)
-  return initStore.bind(store)
-}
-
-function getConfig(config) {
-  if (config) return config
-  try {
-    return require('../../../stora.config').default
-  } catch (e) {
-    try {
-      return require('../../../src/stora.config').default
-    } catch (e) {
-      return {
-        states: {},
-        actions: {},
-        init: () => {}
-      }
+  store.actions = {
+    ...store.actions,
+    internal: {
+      mutate: mutate.bind(store),
+      query: query.bind(store)
+    },
+    routra: {
+      visit: visit.bind(store)
     }
   }
+  if (initializer) initializer(store)
+  return initStore.bind(store)
 }
 
 export default config => {
@@ -141,9 +172,10 @@ export default config => {
     stora = useStora(states, actions, init)
     return stora()
   } else {
+    if (config && config.store) return stora('store')
     let [states, actions] = stora()
-    if (config && config.mutate) actions.mutate(config.mutate)
-    if (config && config.query) return actions.query(config.query)
+    if (config && config.mutate) actions.internal.mutate(config.mutate)
+    if (config && config.query) return actions.internal.query(config.query)
     return [states, actions]
   }
 }
