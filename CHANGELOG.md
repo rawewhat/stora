@@ -1,3 +1,7 @@
+### 0.2.0 (November 16, 2019)
+* **Added** support for next.js server-side rendering integration using custom withStora HOC.
+* **Changed** re-write README to include next.js setup, added API sections and fix typos.
+
 ### 0.1.1 (November 14, 2019)
 * **Added** tightly integrated with [RoutRa](https://github.com/rawewhat/routra), a very simple router for React following StoRa footprint.
 * **Added** with integration with [RoutRa](https://github.com/rawewhat/routra), you can use actions.quera.visit to change route right inside StoRa

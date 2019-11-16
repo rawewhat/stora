@@ -2,26 +2,42 @@
 
 is a global **state management** library with **no dependency** and written purely on **React hooks**.
 
+## How it works?
+
+- in every component that call **useStora()** hook will **subscribe** to the **global store** on component **mounted**.
+- anytime you call **set()** to change state, all components that **subscribed** to global store will **re-render**.
+- when subscribed component **unmounted**, global store will **un-subscribe** it to prevent **re-render**.
+- with **proper** usage of **useMemo()** and **useCallback()** hook, we can control re-render to **quantum** level.
+
+_so basically, only mounted component that call useStora() hook will re-render when state change_
+
+## What's next?
+
+- implement automatically memoization with useMemo and useCallback.
+- state specific component re-render, currently re-render all subscribed component.
+
 ## Content
 
 - [Install](#install)
 - [Setup](#setup)
   - [With stora.config.js](#1-initialize-states-and-actions-in-storaconfigjs)
   - [With top-level component](#2-initialize-states-and-actions-in-top-level-component)
+  - [With next.js ssr](#3-nextjs-server-side-rendering)
 - [Usage](#usage)
-  - [Change state inside action function](#1-change-state-inside-action-function)
-    - [Set a states with key value pair](#11-change-a-component-state-using-key-value-pair)
-    - [Set multiple states with object](#12-change-multiple-component-states-using-object)
-    - [Set multiple states with arrays](#13-change-multiple-component-states-using-arrays)
-    - [Get a state with string](#14-get-a-component-states-using-state-name)
-    - [Get multiple states with arrays](#15-get-multiple-component-states-using-arrays-of-state-name)
-  - [Accessing states and actions](#2-accessing-states-and-actions)
-    - [Get one or multiple states](#21-get-one-or-multiple-component-states)
-    - [Get one or multiple actions](#22-get-one-or-multiple-component-actions)
-    - [Get only actions and skip states](#23-get-only-actions-and-skip-states)
-    - [Get states and actions with dot](#24-get-states-and-actions-with-dot)
-  - [Add more states or actions](#3-adding-additional-states-or-actions)
-  - [Select one or multiple states](#4-selecting-one-or-multiple-states)
+- [API](#api)
+  - [1. In Actions Config](#1-in-actions-config)
+    - [1.1 set(string, obj)](#11-setstring-obj)
+    - [1.2 set(obj)](#12-setobj)
+    - [1.3 set([obj, obj])](#13-setobj-obj)
+    - [1.4 get(string)](#14-getstring)
+    - [1.5 get([string, string])](#15-getstring-string)
+  - [2. In React Component](#2-in-react-component)
+    - [2.1 [{ component: { state }}]](#21--component--state-)
+    - [2.2 [{ component: { action }}]](#22--component--action-)
+    - [2.3 [, actions]](#23--actions)
+    - [2.4 actions.component.actions()](#24-actionscomponentaction)
+  - [3. useStora({ mutate: { obj, func }})](#3-usestora-mutate--obj-func-)
+  - [4. useStora({ query: { string | [string, string] }})](#4-usestora-query--string--string-string-)
 - [Demo](#demo)
 - [Example](#example)
 - [Acknowledgment](#acknowledgement)
@@ -41,29 +57,29 @@ using yarn
 
 create a stora config file in either root or src directory of your project.
 
-Example:  
-/stora.config.js  
-/src/stora.config.js
+* [project_root]/stora.config.js  
+or
+* [project_root]/src/stora.config.js
 
 ```javascript
 export default {
   // This will be where you initialize your states
   states: {
-    testScreen: {
+    testComponent: {
       testState: 'testState'
     },
-    demoScreen: {
+    demoComponent: {
       demoState: 'demoState'
     }
   },
   // This will be where you initialize your actions
   actions: {
-    testScreen: {
+    testComponent: {
       testAction: stora => {
         console.log('stora', stora)
       }
     },
-    demoScreen: {
+    demoComponent: {
       demoAction: ({ states, actions }) => {
         console.log('states', states, 'actions', actions)
       }
@@ -76,66 +92,158 @@ export default {
 }
 ```
 
-_Note: states and actions object uses component based naming convention_
+_Note: states and actions object use component based naming convention_
 
 ### 2. Initialize states and actions in top-level component
 
 if you don't want to use stora.config.js to initialize your states and actions, use below syntax instead
 
-Example: change your **App.js** like below
+* change your **App.js** or any top-level component
 
 ```javascript
 import React from 'react'
 import useStora from '@rawewhat/stora'
 // you can also import it from another place such as your config directory
-import { STATES, ACTIONS, INIT } from '../config'
+import { initialStates, initialActions, initializer } from '../config'
 
-const STATES = {
-  testScreen: {
+const initialStates = {
+  testComponent: {
     testState: 'testState'
   },
-  demoScreen: {
+  demoComponent: {
     demoState: 'demoState'
   }
 }
 
-const ACTIONS = {
-  testScreen: {
+const initialActions = {
+  testComponent: {
     testAction: stora => {
       console.log('stora', stora)
     }
   },
-  demoScreen: {
+  demoComponent: {
     demoAction: ({ states, actions }) => {
       console.log('states', states, 'actions', actions)
     }
   }
 }
 
-const INIT = stora => {
+const initializer = stora => {
   console.log('stora', stora)
 }
 
 const App = props => {
-  const [states, actions] = useStora(STATES, ACTIONS, INIT)
+  const [states, actions] = useStora({
+    states: initialStates,
+    actions: initialActions,
+    init: initializer
+  })
   console.log('states', states, 'actions', actions)
-  return <div>App</div>
+  return <span>Stora is awesome!</span>
 }
 
 export default App
 ```
 
-_Note: states and actions object uses component based naming convention_
+_Note: states and actions object use component based naming convention_
+
+### 3. Next.js server-side rendering
+
+to get it working with server-side rendering, we need to make a custom HOC to wrap our \_app.js.  
+if you don't use \_app.js, you need to wrap the HOC in every pages.
+
+- create a HOC in anywhere you want, for example src/service/hoc.js
+
+```javascript
+import React from 'react'
+import useStora from '@rawewhat/stora'
+// Import our stora config here
+import config from '../stora.config'
+
+export const withStora = (PageComponent, { ssr = true } = {}) => {
+  const WithStora = props => {
+    const { states, actions, init } = config
+    useStora({ states, actions, init })
+    return <PageComponent {...props} />
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    const displayName =
+      PageComponent.displayName || PageComponent.name || 'Component'
+    WithStora.displayName = `withStora(${displayName})`
+  }
+
+  if (ssr || PageComponent.getInitialProps) {
+    WithStora.getInitialProps = async context => {
+      const pageProps =
+        typeof PageComponent.getInitialProps === 'function'
+          ? await PageComponent.getInitialProps(context)
+          : {}
+
+      return {
+        ...pageProps
+      }
+    }
+  }
+
+  return WithStora
+}
+```
+
+- after that wrap your \_app.js or page component with withStora HOC
+
+in \_app.js
+
+```javascript
+import React from 'react'
+import NextApp from 'next/app'
+// import our withStora hoc from service/hoc.js
+import { withStora } from '../service/hoc'
+
+class App extends NextApp {
+  static async getInitialProps(appContext) {
+    const appProps = await NextApp.getInitialProps(appContext)
+
+    return { ...appProps }
+  }
+
+  render() {
+    const { Component, pageProps } = this.props
+    return <Component {...pageProps} />
+  }
+}
+
+// wrap our app with withStora HOC here
+export default withStora(App)
+```
+
+in each page component
+
+```javascript
+import { withStora } from '../service/hoc'
+import HomeScreen from './screens/Home'
+export default withStora(HomeScreen)
+```
 
 ## Usage
 
-### 1. Change state inside action function
+after initialized states and actions in stora.config.
 
-in your action function you have access to the global store where you can change and access state.
+- just import useStora in any component you want to use it
 
-#### 1.1 Change a component state using key value pair
+`import useStora from '@rawewhat/stora'`
 
-change only one component states using key and value argument
+- then run it in your function component
+
+`const [states, actions] = useStora()`
+
+## API
+
+### 1. In Actions Config
+
+#### 1.1 set(string, obj)
+
+change only one component states using key and value arguments
 
 ```javascript
 const EXAMPLE_ACTIONS = {
@@ -149,11 +257,11 @@ const EXAMPLE_ACTIONS = {
 }
 ```
 
-_Any other states in testComponent will be added automatically_
+_any previous states in testComponent will be added automatically_
 
-#### 1.2 Change multiple component states using object
+#### 1.2 set(obj)
 
-change multiple component states using new states object, stora will automatically keep previous states
+change multiple component states with new states object
 
 ```javascript
 const EXAMPLE_ACTIONS = {
@@ -172,11 +280,11 @@ const EXAMPLE_ACTIONS = {
 }
 ```
 
-_Any other component states will be added automatically_
+_any previous component states will be added automatically_
 
-#### 1.3 Change multiple component states using arrays
+#### 1.3 set([obj, obj])
 
-change multiple component states using arrays of new states object, stora will automatically keep previous
+change multiple component states using arrays of new states object
 
 ```javascript
 const EXAMPLE_ACTIONS = {
@@ -199,11 +307,11 @@ const EXAMPLE_ACTIONS = {
 }
 ```
 
-_Any other component states will be added automatically_
+_any previous component states will be added automatically_
 
-#### 1.4 Get a component states using state name
+#### 1.4 get(string)
 
-get only one component states using string of state name
+get only one component states using string name
 
 ```javascript
 const EXAMPLE_ACTIONS = {
@@ -215,9 +323,9 @@ const EXAMPLE_ACTIONS = {
 }
 ```
 
-#### 1.5 Get multiple component states using arrays of state name
+#### 1.5 get([string, string])
 
-get multiple component states using arrays of state name string
+get multiple component states using arrays of string name
 
 ```javascript
 const EXAMPLE_ACTIONS = {
@@ -232,11 +340,11 @@ const EXAMPLE_ACTIONS = {
 }
 ```
 
-### 2. Accessing states and actions
+### 2. In React Component
 
-#### 2.1 Get one or multiple component states
+#### 2.1 [{ component: { state }}]
 
-you can access states of specific component or even multiple component states using destructuring syntax.
+access states of specific component or even multiple component states using destructuring syntax.
 
 ```javascript
 const [
@@ -248,9 +356,9 @@ const [
 ] = useStora()
 ```
 
-#### 2.2 Get one or multiple component actions
+#### 2.2 [{ component: { action }}]
 
-you can access actions of specific component or even multiple component actions using destructuring syntax.
+access actions of specific component or even multiple component actions using destructuring syntax.
 
 ```javascript
 const [
@@ -262,17 +370,17 @@ const [
 ] = useStora()
 ```
 
-#### 2.3 Get only actions and skip states
+#### 2.3 [, actions]
 
-you can also skip states object and directly access actions using below syntax.
+skip states object and directly access actions.
 
 ```javascript
 const [, actions] = useStora()
 ```
 
-#### 2.4 Get states and actions with dot
+#### 2.4 actions.component.action()
 
-you may also use dot access on states and actions too
+use dot to access states and actions
 
 ```javascript
 const [states, actions] = useStora()
@@ -281,9 +389,9 @@ console.log('testState:', states.testComponent.testState)
 actions.demoComponent.demoAction()
 ```
 
-### 3. Adding additional states or actions
+### 3. useStora({ mutate: { obj, func }})
 
-sometimes you want add more states when using useStora hook on a component
+sometimes you want to add more states, actions or both when using useStora hook on a component
 
 - **mutate** for adding additional states and actions.
 
@@ -355,7 +463,7 @@ const [
 
 _by checking mutation object type, useStora is smart enough to know whether you want to add state or action_
 
-### 4. Selecting one or multiple states
+### 4. useStora({ query: { string | [string, string] }})
 
 if you want to return only some component states from useStora hook
 
@@ -364,7 +472,7 @@ if you want to return only some component states from useStora hook
 Example: select only one component states
 
 ```javascript
-const [states, ] = useStora({
+const [states] = useStora({
   query: 'testComponent'
 })
 // states for this component contains only testComponent states
@@ -376,7 +484,7 @@ const {
 Example: select multiple component states
 
 ```javascript
-const [states, ] = useStora({
+const [states] = useStora({
   query: ['testComponent', 'demoComponent']
 })
 // states for this component contains only testComponent and demoComponent states

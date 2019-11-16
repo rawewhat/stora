@@ -1,6 +1,8 @@
 export default {
   states: {
-    test: false,
+    test: {
+      testState: 'testState'
+    },
     nested: {
       love: {
         me: 'me',

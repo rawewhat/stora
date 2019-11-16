@@ -31,7 +31,6 @@
     "@rawewhat/routra": "file:../../routra",
     "@rawewhat/stora": "file:..",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0",
-    "src": "^1.1.2"
+    "react-dom": "^16.11.0"
   }
 }

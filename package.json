@@ -6,6 +6,7 @@
   "scripts": {
     "build": "babel src -o index.js",
     "watch": "babel src -w -o index.js",
+    "reset": "rm -rf node_modules yarn.lock && yarn",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "github:rawewhat/stora",
