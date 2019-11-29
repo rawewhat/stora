@@ -9,6 +9,21 @@ export default {
         us: 'us'
       }
     },
+    obj: {
+      test: 'no',
+      test1: 'hi',
+      test2: 'hello'
+    },
+    obj1: {
+      test: 'no',
+      test1: 'hi',
+      test2: 'hello'
+    },
+    obj2: {
+      test: 'no',
+      test1: 'hi',
+      test2: 'hello'
+    },
     result: null
   },
   actions: {
@@ -20,6 +35,9 @@ export default {
     },
     get: ({ get }, key) => {
       return get(key)
+    },
+    setObj: ({ set }, obj) => {
+      set(obj)
     }
   },
   init: store => {

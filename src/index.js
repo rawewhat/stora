@@ -97,18 +97,9 @@ function mutate() {
 
 function set() {
   if (typeof arguments[0] === 'object' && !Array.isArray(arguments[0])) {
-    this.states = { ...this.states, ...arguments[0] }
-    this.setters.forEach(set => {
-      set(this.states)
+    Object.entries(arguments[0]).forEach(([key, value]) => {
+      this.states[key] = { ...this.states[key], ...value }
     })
-  } else if (typeof arguments[0] === 'object' && Array.isArray(arguments[0])) {
-    for (let i in arguments[0]) {
-      if (Object.prototype.hasOwnProperty.call(arguments[0], i)) {
-        const key = Object.keys(arguments[0][i])[0]
-        const value = Object.values(arguments[0][i])[0]
-        if (typeof value === 'object') this.states[key] = value
-      }
-    }
     this.setters.forEach(set => {
       set(this.states)
     })

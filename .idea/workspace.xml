@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fd919ff5-663d-494e-a15f-f9afaf194a8b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/npmpublish.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/npmpublish.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/src/components/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/components/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/src/routra.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/routra.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/src/screens/Demo1/Demo1.js" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/screens/Demo1/Demo1.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/src/stora.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/stora.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/demo/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -78,7 +84,13 @@
       <workItem from="1573729398657" duration="7524000" />
       <workItem from="1573747624464" duration="528000" />
       <workItem from="1573817113854" duration="6132000" />
-      <workItem from="1573827963503" duration="22941000" />
+      <workItem from="1573827963503" duration="23541000" />
+      <workItem from="1573912424460" duration="17000" />
+      <workItem from="1573970845521" duration="1282000" />
+      <workItem from="1573974055494" duration="866000" />
+      <workItem from="1574005726053" duration="643000" />
+      <workItem from="1574997088585" duration="844000" />
+      <workItem from="1574997939361" duration="6474000" />
     </task>
     <servers />
   </component>

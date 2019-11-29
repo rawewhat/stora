@@ -3,15 +3,8 @@ import useStora from '@rawewhat/stora'
 import JsonView from '../../components/JsonView'
 
 function Demo1Screen() {
-  const [
-    {
-      test: { testState }
-    },
-    actions
-  ] = useStora()
-  console.log('love', testState)
-  return <div></div>
-  //const { test } = states
+  const [states, actions] = useStora()
+  const { test } = states
   actions.log('Demo', states)
   return test ? (
     <>

@@ -28,9 +28,8 @@ _so basically, only mounted component that call useStora() hook will re-render w
   - [1. In Actions Config](#1-in-actions-config)
     - [1.1 set(string, obj)](#11-setstring-obj)
     - [1.2 set(obj)](#12-setobj)
-    - [1.3 set([obj, obj])](#13-setobj-obj)
-    - [1.4 get(string)](#14-getstring)
-    - [1.5 get([string, string])](#15-getstring-string)
+    - [1.3 get(string)](#13-getstring)
+    - [1.4 get([string, string])](#14-getstring-string)
   - [2. In React Component](#2-in-react-component)
     - [2.1 [{ component: { state }}]](#21--component--state-)
     - [2.2 [{ component: { action }}]](#22--component--action-)
@@ -282,34 +281,7 @@ const EXAMPLE_ACTIONS = {
 
 _any previous component states will be added automatically_
 
-#### 1.3 set([obj, obj])
-
-change multiple component states using arrays of new states object
-
-```javascript
-const EXAMPLE_ACTIONS = {
-  exampleComponent: {
-    exampleAction: ({ set }) => {
-      set([
-        {
-          testComponent: {
-            testState: 'changed'
-          }
-        },
-        {
-          demoComponent: {
-            demoState: null
-          }
-        }
-      ])
-    }
-  }
-}
-```
-
-_any previous component states will be added automatically_
-
-#### 1.4 get(string)
+#### 1.3 get(string)
 
 get only one component states using string name
 
@@ -323,7 +295,7 @@ const EXAMPLE_ACTIONS = {
 }
 ```
 
-#### 1.5 get([string, string])
+#### 1.4 get([string, string])
 
 get multiple component states using arrays of string name
 
@@ -501,7 +473,7 @@ I wrote a simple router using StoRa + [RoutRa](https://github.com/rawewhat/routr
 - `git clone git@github.com:rawewhat/routra.git` to clone the project
 - `cd demo` change to demo directory
 - `yarn install` to install dependencies
-- `yarn dev` it will be read on http://localhost:1234
+- `yarn dev` it will be ready on http://localhost:1234
 
 ## Example
 

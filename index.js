@@ -241,22 +241,13 @@ function set() {
   var _this3 = this
 
   if (_typeof(arguments[0]) === 'object' && !Array.isArray(arguments[0])) {
-    this.states = _objectSpread({}, this.states, {}, arguments[0])
-    this.setters.forEach(function(set) {
-      set(_this3.states)
-    })
-  } else if (
-    _typeof(arguments[0]) === 'object' &&
-    Array.isArray(arguments[0])
-  ) {
-    for (var i in arguments[0]) {
-      if (Object.prototype.hasOwnProperty.call(arguments[0], i)) {
-        var key = Object.keys(arguments[0][i])[0]
-        var value = Object.values(arguments[0][i])[0]
-        if (_typeof(value) === 'object') this.states[key] = value
-      }
-    }
+    Object.entries(arguments[0]).forEach(function(_ref5) {
+      var _ref6 = _slicedToArray(_ref5, 2),
+        key = _ref6[0],
+        value = _ref6[1]
 
+      _this3.states[key] = _objectSpread({}, _this3.states[key], {}, value)
+    })
     this.setters.forEach(function(set) {
       set(_this3.states)
     })

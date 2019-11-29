@@ -2,6 +2,7 @@ import React, { lazy } from 'react'
 const Demo1 = lazy(() => import('./screens/Demo1'))
 const Demo2 = lazy(() => import('./screens/Demo2'))
 const Demo3 = lazy(() => import('./screens/Demo3'))
+const Demo4 = lazy(() => import('./screens/Demo4'))
 
 export default [
   {
@@ -19,5 +20,9 @@ export default [
   {
     path: '/demo-3',
     screen: Demo3
+  },
+  {
+    path: '/demo-4',
+    screen: Demo4
   }
 ]
