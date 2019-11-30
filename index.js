@@ -248,6 +248,7 @@ function set() {
 
       _this3.states[key] = _objectSpread({}, _this3.states[key], {}, value)
     })
+    this.states = _objectSpread({}, this.states)
     this.setters.forEach(function(set) {
       set(_this3.states)
     })

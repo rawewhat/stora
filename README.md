@@ -11,10 +11,13 @@ is a global **state management** library with **no dependency** and written pure
 
 _so basically, only mounted component that call useStora() hook will re-render when state change_
 
+
 ## What's next?
 
 - implement automatically memoization with useMemo and useCallback.
 - state specific component re-render, currently re-render all subscribed component.
+
+## [Changelog](https://github.com/rawewhat/stora/blob/master/CHANGELOG.md)
 
 ## Content
 

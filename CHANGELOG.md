@@ -1,3 +1,13 @@
+### 0.2.3 (November 30, 2019)
+* **Fixed** set(obj) properly update states after triggered.
+
+### 0.2.2 (November 29, 2019)
+* **Added** set(obj) now will spread previous component states automatically.
+* **Removed** set([obj, obj]) this function is deprecated, use set(obj) instead.
+
+### 0.2.1 (November 16, 2019)
+* **Added** use github actions to auto build/publish to npm and github registry.
+
 ### 0.2.0 (November 16, 2019)
 * **Added** support for next.js server-side rendering integration using custom withStora HOC.
 * **Changed** re-write README to include next.js setup, added API sections and fix typos.

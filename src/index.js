@@ -100,6 +100,9 @@ function set() {
     Object.entries(arguments[0]).forEach(([key, value]) => {
       this.states[key] = { ...this.states[key], ...value }
     })
+    this.states = {
+      ...this.states
+    }
     this.setters.forEach(set => {
       set(this.states)
     })
