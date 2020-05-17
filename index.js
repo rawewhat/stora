@@ -1,7 +1,7 @@
 'use strict'
 
 Object.defineProperty(exports, '__esModule', {
-  value: true
+  value: true,
 })
 exports['default'] = void 0
 
@@ -12,7 +12,7 @@ function ownKeys(object, enumerableOnly) {
   if (Object.getOwnPropertySymbols) {
     var symbols = Object.getOwnPropertySymbols(object)
     if (enumerableOnly)
-      symbols = symbols.filter(function(sym) {
+      symbols = symbols.filter(function (sym) {
         return Object.getOwnPropertyDescriptor(object, sym).enumerable
       })
     keys.push.apply(keys, symbols)
@@ -24,13 +24,13 @@ function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i] != null ? arguments[i] : {}
     if (i % 2) {
-      ownKeys(source, true).forEach(function(key) {
+      ownKeys(Object(source), true).forEach(function (key) {
         _defineProperty(target, key, source[key])
       })
     } else if (Object.getOwnPropertyDescriptors) {
       Object.defineProperties(target, Object.getOwnPropertyDescriptors(source))
     } else {
-      ownKeys(source).forEach(function(key) {
+      ownKeys(Object(source)).forEach(function (key) {
         Object.defineProperty(
           target,
           key,
@@ -48,7 +48,7 @@ function _defineProperty(obj, key, value) {
       value: value,
       enumerable: true,
       configurable: true,
-      writable: true
+      writable: true,
     })
   } else {
     obj[key] = value
@@ -58,23 +58,39 @@ function _defineProperty(obj, key, value) {
 
 function _slicedToArray(arr, i) {
   return (
-    _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest()
+    _arrayWithHoles(arr) ||
+    _iterableToArrayLimit(arr, i) ||
+    _unsupportedIterableToArray(arr, i) ||
+    _nonIterableRest()
   )
 }
 
 function _nonIterableRest() {
-  throw new TypeError('Invalid attempt to destructure non-iterable instance')
+  throw new TypeError(
+    'Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.'
+  )
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return
+  if (typeof o === 'string') return _arrayLikeToArray(o, minLen)
+  var n = Object.prototype.toString.call(o).slice(8, -1)
+  if (n === 'Object' && o.constructor) n = o.constructor.name
+  if (n === 'Map' || n === 'Set') return Array.from(o)
+  if (n === 'Arguments' || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
+    return _arrayLikeToArray(o, minLen)
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i]
+  }
+  return arr2
 }
 
 function _iterableToArrayLimit(arr, i) {
-  if (
-    !(
-      Symbol.iterator in Object(arr) ||
-      Object.prototype.toString.call(arr) === '[object Arguments]'
-    )
-  ) {
-    return
-  }
+  if (typeof Symbol === 'undefined' || !(Symbol.iterator in Object(arr))) return
   var _arr = []
   var _n = true
   var _d = false
@@ -106,6 +122,7 @@ function _arrayWithHoles(arr) {
 }
 
 function _typeof(obj) {
+  '@babel/helpers - typeof'
   if (typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol') {
     _typeof = function _typeof(obj) {
       return typeof obj
@@ -137,7 +154,7 @@ function getConfig(config) {
       return {
         states: {},
         actions: {},
-        init: function init() {}
+        init: function init() {},
       }
     }
   }
@@ -146,23 +163,23 @@ function getConfig(config) {
 function initStore() {
   var _this = this
 
+  if (arguments[0] === 'store') return this
   var newSetter = (0, _react.useState)()[1]
-  ;(0, _react.useEffect)(function() {
+  ;(0, _react.useEffect)(function () {
     _this.setters.push(newSetter)
 
-    return function() {
-      _this.setters = _this.setters.filter(function(setter) {
+    return function () {
+      _this.setters = _this.setters.filter(function (setter) {
         return setter !== newSetter
       })
     }
   }, [])
-  if (arguments[0] === 'store') return this
   return [this.states, this.actions]
 }
 
 function initActions(store, actions) {
   var registeredActions = {}
-  Object.keys(actions).forEach(function(key) {
+  Object.keys(actions).forEach(function (key) {
     if (typeof actions[key] === 'function') {
       registeredActions[key] = actions[key].bind(null, store)
     }
@@ -176,7 +193,7 @@ function initActions(store, actions) {
 
 function visit() {
   this.set('routra', {
-    route: arguments[0]
+    route: arguments[0],
   })
 }
 
@@ -203,13 +220,13 @@ function query() {
 function mutate() {
   var _this2 = this
 
-  Object.entries(arguments[0]).forEach(function(_ref) {
+  Object.entries(arguments[0]).forEach(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2),
       key = _ref2[0],
       value = _ref2[1]
 
     if (_typeof(value) === 'object') {
-      Object.entries(value).forEach(function(_ref3) {
+      Object.entries(value).forEach(function (_ref3) {
         var _ref4 = _slicedToArray(_ref3, 2),
           key1 = _ref4[0],
           value1 = _ref4[1]
@@ -217,15 +234,15 @@ function mutate() {
         if (typeof value1 === 'function') {
           if (_this2.actions[key] && _this2.actions[key][key1]) return
           _this2.actions[key] = _objectSpread(
+            _objectSpread({}, _this2.actions[key]),
             {},
-            _this2.actions[key],
             _defineProperty({}, key1, value1.bind(null, _this2))
           )
         } else {
           if (_this2.states[key] && _this2.states[key][key1]) return
           _this2.states[key] = _objectSpread(
+            _objectSpread({}, _this2.states[key]),
             {},
-            _this2.states[key],
             _defineProperty({}, key1, value1)
           )
         }
@@ -241,15 +258,18 @@ function set() {
   var _this3 = this
 
   if (_typeof(arguments[0]) === 'object' && !Array.isArray(arguments[0])) {
-    Object.entries(arguments[0]).forEach(function(_ref5) {
+    Object.entries(arguments[0]).forEach(function (_ref5) {
       var _ref6 = _slicedToArray(_ref5, 2),
         key = _ref6[0],
         value = _ref6[1]
 
-      _this3.states[key] = _objectSpread({}, _this3.states[key], {}, value)
+      _this3.states[key] = _objectSpread(
+        _objectSpread({}, _this3.states[key]),
+        value
+      )
     })
     this.states = _objectSpread({}, this.states)
-    this.setters.forEach(function(set) {
+    this.setters.forEach(function (set) {
       set(_this3.states)
     })
   } else if (
@@ -257,15 +277,18 @@ function set() {
     _typeof(arguments[1]) === 'object'
   ) {
     this.states = _objectSpread(
+      _objectSpread({}, this.states),
       {},
-      this.states,
       _defineProperty(
         {},
         arguments[0],
-        _objectSpread({}, this.states[arguments[0]], {}, arguments[1])
+        _objectSpread(
+          _objectSpread({}, this.states[arguments[0]]),
+          arguments[1]
+        )
       )
     )
-    this.setters.forEach(function(set) {
+    this.setters.forEach(function (set) {
       set(_this3.states)
     })
   } else console.info('Unsupported set operation!')
@@ -291,25 +314,33 @@ function get() {
 
 var useStora = function useStora(initialStates, initialActions, initializer) {
   var store = {
-    states: _objectSpread({}, initialStates, {
-      routra: {
-        route: null
+    states: _objectSpread(
+      _objectSpread({}, initialStates),
+      {},
+      {
+        routra: {
+          route: null,
+        },
       }
-    }),
-    setters: []
+    ),
+    setters: [],
   }
   store.get = get.bind(store)
   store.set = set.bind(store)
   if (initialActions) store.actions = initActions(store, initialActions)
-  store.actions = _objectSpread({}, store.actions, {
-    internal: {
-      mutate: mutate.bind(store),
-      query: query.bind(store)
-    },
-    routra: {
-      visit: visit.bind(store)
+  store.actions = _objectSpread(
+    _objectSpread({}, store.actions),
+    {},
+    {
+      internal: {
+        mutate: mutate.bind(store),
+        query: query.bind(store),
+      },
+      routra: {
+        visit: visit.bind(store),
+      },
     }
-  })
+  )
   if (initializer) initializer(store)
   return initStore.bind(store)
 }

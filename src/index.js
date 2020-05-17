@@ -19,27 +19,27 @@ function getConfig(config) {
       return {
         states: {},
         actions: {},
-        init: () => {}
+        init: () => {},
       }
     }
   }
 }
 
 function initStore() {
+  if (arguments[0] === 'store') return this
   const newSetter = useState()[1]
   useEffect(() => {
     this.setters.push(newSetter)
     return () => {
-      this.setters = this.setters.filter(setter => setter !== newSetter)
+      this.setters = this.setters.filter((setter) => setter !== newSetter)
     }
   }, [])
-  if (arguments[0] === 'store') return this
   return [this.states, this.actions]
 }
 
 function initActions(store, actions) {
   const registeredActions = {}
-  Object.keys(actions).forEach(key => {
+  Object.keys(actions).forEach((key) => {
     if (typeof actions[key] === 'function') {
       registeredActions[key] = actions[key].bind(null, store)
     }
@@ -78,13 +78,13 @@ function mutate() {
           if (this.actions[key] && this.actions[key][key1]) return
           this.actions[key] = {
             ...this.actions[key],
-            [key1]: value1.bind(null, this)
+            [key1]: value1.bind(null, this),
           }
         } else {
           if (this.states[key] && this.states[key][key1]) return
           this.states[key] = {
             ...this.states[key],
-            [key1]: value1
+            [key1]: value1,
           }
         }
       })
@@ -101,9 +101,9 @@ function set() {
       this.states[key] = { ...this.states[key], ...value }
     })
     this.states = {
-      ...this.states
+      ...this.states,
     }
-    this.setters.forEach(set => {
+    this.setters.forEach((set) => {
       set(this.states)
     })
   } else if (
@@ -114,10 +114,10 @@ function set() {
       ...this.states,
       [arguments[0]]: {
         ...this.states[arguments[0]],
-        ...arguments[1]
-      }
+        ...arguments[1],
+      },
     }
-    this.setters.forEach(set => {
+    this.setters.forEach((set) => {
       set(this.states)
     })
   } else console.info('Unsupported set operation!')
@@ -141,7 +141,7 @@ function get() {
 const useStora = (initialStates, initialActions, initializer) => {
   const store = {
     states: { ...initialStates, routra: { route: null } },
-    setters: []
+    setters: [],
   }
   store.get = get.bind(store)
   store.set = set.bind(store)
@@ -150,17 +150,17 @@ const useStora = (initialStates, initialActions, initializer) => {
     ...store.actions,
     internal: {
       mutate: mutate.bind(store),
-      query: query.bind(store)
+      query: query.bind(store),
     },
     routra: {
-      visit: visit.bind(store)
-    }
+      visit: visit.bind(store),
+    },
   }
   if (initializer) initializer(store)
   return initStore.bind(store)
 }
 
-export default config => {
+export default (config) => {
   if (stora === null) {
     const { states, actions, init } = getConfig(config)
     stora = useStora(states, actions, init)

@@ -11,7 +11,6 @@ is a global **state management** library with **no dependency** and written pure
 
 _so basically, only mounted component that call useStora() hook will re-render when state change_
 
-
 ## What's next?
 
 - implement automatically memoization with useMemo and useCallback.
@@ -40,6 +39,7 @@ _so basically, only mounted component that call useStora() hook will re-render w
     - [2.4 actions.component.actions()](#24-actionscomponentaction)
   - [3. useStora({ mutate: { obj, func }})](#3-usestora-mutate--obj-func-)
   - [4. useStora({ query: { string | [string, string] }})](#4-usestora-query--string--string-string-)
+  - [5. useStora({ store: true })](#5-usestora-store-true-)
 - [Demo](#demo)
 - [Example](#example)
 - [Acknowledgment](#acknowledgement)
@@ -59,38 +59,38 @@ using yarn
 
 create a stora config file in either root or src directory of your project.
 
-* [project_root]/stora.config.js  
-or
-* [project_root]/src/stora.config.js
+- [project_root]/stora.config.js  
+  or
+- [project_root]/src/stora.config.js
 
 ```javascript
 export default {
   // This will be where you initialize your states
   states: {
     testComponent: {
-      testState: 'testState'
+      testState: 'testState',
     },
     demoComponent: {
-      demoState: 'demoState'
-    }
+      demoState: 'demoState',
+    },
   },
   // This will be where you initialize your actions
   actions: {
     testComponent: {
-      testAction: stora => {
+      testAction: (stora) => {
         console.log('stora', stora)
-      }
+      },
     },
     demoComponent: {
       demoAction: ({ states, actions }) => {
         console.log('states', states, 'actions', actions)
-      }
-    }
+      },
+    },
   },
   // If you need to do something before global state initialization
-  init: stora => {
+  init: (stora) => {
     console.log('stora', stora)
-  }
+  },
 }
 ```
 
@@ -100,7 +100,7 @@ _Note: states and actions object use component based naming convention_
 
 if you don't want to use stora.config.js to initialize your states and actions, use below syntax instead
 
-* change your **App.js** or any top-level component
+- change your **App.js** or any top-level component
 
 ```javascript
 import React from 'react'
@@ -110,35 +110,35 @@ import { initialStates, initialActions, initializer } from '../config'
 
 const initialStates = {
   testComponent: {
-    testState: 'testState'
+    testState: 'testState',
   },
   demoComponent: {
-    demoState: 'demoState'
-  }
+    demoState: 'demoState',
+  },
 }
 
 const initialActions = {
   testComponent: {
-    testAction: stora => {
+    testAction: (stora) => {
       console.log('stora', stora)
-    }
+    },
   },
   demoComponent: {
     demoAction: ({ states, actions }) => {
       console.log('states', states, 'actions', actions)
-    }
-  }
+    },
+  },
 }
 
-const initializer = stora => {
+const initializer = (stora) => {
   console.log('stora', stora)
 }
 
-const App = props => {
+const App = (props) => {
   const [states, actions] = useStora({
     states: initialStates,
     actions: initialActions,
-    init: initializer
+    init: initializer,
   })
   console.log('states', states, 'actions', actions)
   return <span>Stora is awesome!</span>
@@ -163,7 +163,7 @@ import useStora from '@rawewhat/stora'
 import config from '../stora.config'
 
 export const withStora = (PageComponent, { ssr = true } = {}) => {
-  const WithStora = props => {
+  const WithStora = (props) => {
     const { states, actions, init } = config
     useStora({ states, actions, init })
     return <PageComponent {...props} />
@@ -176,14 +176,14 @@ export const withStora = (PageComponent, { ssr = true } = {}) => {
   }
 
   if (ssr || PageComponent.getInitialProps) {
-    WithStora.getInitialProps = async context => {
+    WithStora.getInitialProps = async (context) => {
       const pageProps =
         typeof PageComponent.getInitialProps === 'function'
           ? await PageComponent.getInitialProps(context)
           : {}
 
       return {
-        ...pageProps
+        ...pageProps,
       }
     }
   }
@@ -252,10 +252,10 @@ const EXAMPLE_ACTIONS = {
   exampleComponent: {
     exampleAction: ({ set }) => {
       set('testComponent', {
-        testState: 'changed'
+        testState: 'changed',
       })
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -271,14 +271,14 @@ const EXAMPLE_ACTIONS = {
     exampleAction: ({ set }) => {
       set({
         testComponent: {
-          testState: 'changed'
+          testState: 'changed',
         },
         demoComponent: {
-          demoState: 'changed'
-        }
+          demoState: 'changed',
+        },
       })
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -293,8 +293,8 @@ const EXAMPLE_ACTIONS = {
   exampleComponent: {
     exampleAction: ({ get }) => {
       const testComponent = get('testComponent')
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -308,10 +308,10 @@ const EXAMPLE_ACTIONS = {
     exampleAction: ({ get }) => {
       const {
         testComponent: { testState },
-        demoComponent: { demoState }
+        demoComponent: { demoState },
       } = get(['testComponent', 'demoComponent'])
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -325,9 +325,9 @@ access states of specific component or even multiple component states using dest
 const [
   {
     testComponent: { testState },
-    demoComponent: { demoState }
+    demoComponent: { demoState },
   },
-  actions
+  actions,
 ] = useStora()
 ```
 
@@ -340,8 +340,8 @@ const [
   states,
   {
     testComponent: { testAction },
-    demoComponent: { demoAction }
-  }
+    demoComponent: { demoAction },
+  },
 ] = useStora()
 ```
 
@@ -377,15 +377,15 @@ const [
   {
     newComponent: { newState }, // here you have access to the new added state
     testComponent: { testState },
-    demoComponent: { demoState }
+    demoComponent: { demoState },
   },
-  actions
+  actions,
 ] = useStora({
   mutate: {
     newComponent: {
-      newState: 'newState'
-    }
-  }
+      newState: 'newState',
+    },
+  },
 })
 ```
 
@@ -397,16 +397,16 @@ const [
   {
     newComponent: { newActions }, // here you have access to the new added action
     testComponent: { testAction },
-    demoComponent: { demoAction }
-  }
+    demoComponent: { demoAction },
+  },
 ] = useStora({
   mutate: {
     newComponent: {
-      newAction: stora => {
+      newAction: (stora) => {
         console.log('stora', stora)
-      }
-    }
-  }
+      },
+    },
+  },
 })
 ```
 
@@ -417,22 +417,22 @@ const [
   {
     newComponent: { newState }, // here you have access to the new added state
     testComponent: { testState },
-    demoComponent: { demoState }
+    demoComponent: { demoState },
   },
   {
     newComponent: { newActions }, // here you have access to the new added action
     testComponent: { testAction },
-    demoComponent: { demoAction }
-  }
+    demoComponent: { demoAction },
+  },
 ] = useStora({
   mutate: {
     newComponent: {
       newState: 'newState',
-      newAction: stora => {
+      newAction: (stora) => {
         console.log('stora', stora)
-      }
-    }
-  }
+      },
+    },
+  },
 })
 ```
 
@@ -448,11 +448,11 @@ Example: select only one component states
 
 ```javascript
 const [states] = useStora({
-  query: 'testComponent'
+  query: 'testComponent',
 })
 // states for this component contains only testComponent states
 const {
-  testComponent: { testState }
+  testComponent: { testState },
 } = states
 ```
 
@@ -460,13 +460,27 @@ Example: select multiple component states
 
 ```javascript
 const [states] = useStora({
-  query: ['testComponent', 'demoComponent']
+  query: ['testComponent', 'demoComponent'],
 })
 // states for this component contains only testComponent and demoComponent states
 const {
   testComponent: { testState },
-  demoComponent: { demoState }
+  demoComponent: { demoState },
 } = states
+```
+
+### 5. useStora({ store: true })
+
+if you want to get stora instance in a non-component javascript file
+
+- **store** for getting an instance of stora
+
+Example: get access to stora from anywhere.
+
+```
+const stora = useStora({ store: true })
+
+const { actions, states } = stora
 ```
 
 ## Demo
@@ -500,8 +514,8 @@ const App = () => {
 const Test = () => {
   const [states, actions] = useStora({
     mutate: {
-      love: () => {}
-    }
+      love: () => {},
+    },
   })
   console.log('states', states, 'actions', actions)
   return (
@@ -516,10 +530,10 @@ const Test2 = () => {
   const [states, actions] = useStora({
     mutate: {
       test100: {
-        test111: 'test111'
-      }
+        test111: 'test111',
+      },
     },
-    query: ['test100']
+    query: ['test100'],
   })
   console.log('states', states, 'actions', actions)
   return <div>Test2</div>
